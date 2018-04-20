@@ -1,0 +1,6 @@
+.D*
+a.out
+*.o
+CMake*
+cmake*
+.idea*
