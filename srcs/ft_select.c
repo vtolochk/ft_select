@@ -11,25 +11,49 @@
 /* ************************************************************************** */
 
 #include "ft_select.h"
-#include <stdio.h>
-#include <sys/ioctl.h>
-#include <term.h>
-#include "ft_select.h"
 
-int  main(void)
+int print_command(int sign)
 {
-	char term_buf[2048];
-	char *termtype = getenv ("TERM");
-	int success;
+	write(STDERR_FILENO, &sign, 1);
+	return (1);
+}
 
-	if (termtype == 0)
-		printf("Specify a terminal type with `setenv TERM <yourtype>'.\n");
+int exit_error(char *error)
+{
+	write(2, error, ft_strlen(error));
+	exit(1);
+}
 
-	success = tgetent (term_buf, termtype);
-	if (success < 0)
-		printf("Could not access the termcap data base.\n");
-	else if (success == 0)
-		printf("Terminal type `%s' is not defined.\n", termtype);
-	printf("name of term: %s\n", term_buf);
+void get_screen_size(t_select *data)
+{
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &data->size);
+}
+
+int  main(int argc, char **argv)
+{
+	char key;
+	t_select data;
+	t_files *files;
+
+	key = 0;
+	if (!isatty(0))
+		exit_error("Stdin is not terminal\n");
+	set_raw_mode(&data);
+	get_files(&files, argv, argc, &data.list_len);
+	while (1)
+	{
+		get_screen_size(&data);
+		print_files(files, data.list_len);
+		read(0, &key, 8);
+		if (key == ESC)
+			break;
+		if (key == 's')
+		{
+			char c = 27;
+			write(1, &c, 1);
+			write(1, "[1;C", 4);
+		}
+	}
+	set_canonical_mode(&data);
 	return (0);
 }

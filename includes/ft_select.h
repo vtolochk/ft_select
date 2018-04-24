@@ -14,5 +14,32 @@
 # define FT_SELECT_H
 
 #include "../libft/includes/libft.h"
+#include <termios.h>
+#include <term.h>
+#include <sys/ioctl.h>
+
+#define ESC 27
+
+typedef struct s_select
+{
+	int list_len;
+	struct winsize size;
+	struct termios tty;
+	struct termios old_tty;
+}               t_select;
+
+typedef struct s_files
+{
+	char *name;
+	struct s_files *next;
+	struct s_files *prev;
+}               t_files;
+
+int exit_error(char *error);
+int print_command(int sign);
+void set_raw_mode(t_select *data);
+void set_canonical_mode(t_select *data);
+void get_files(t_files **list, char **argv, int argc, int *list_len);
+void print_files(t_files *head, int list_len);
 
 #endif

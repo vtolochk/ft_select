@@ -6,7 +6,7 @@
 #    By: vtolochk <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/20 15:02:45 by vtolochk          #+#    #+#              #
-#    Updated: 2018/04/20 15:08:28 by vtolochk         ###   ########.fr        #
+#    Updated: 2018/04/24 18:54:34 by vtolochk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ NAME = ft_select
 
 HEADER = includes/ft_select.h
 
-SRCS = srcs/ft_select.c
+SRCS = srcs/ft_select.c srcs/mods.c srcs/list_funcs.c
 
 OBJ = $(SRCS:.c=.o)
 
