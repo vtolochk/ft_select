@@ -17,8 +17,13 @@
 #include <termios.h>
 #include <term.h>
 #include <sys/ioctl.h>
+#include <termcap.h>
+
+#define UP 0
+#define DOWN 1
 
 #define ESC 27
+#define BRACKET 91
 
 typedef struct s_select
 {
@@ -31,6 +36,8 @@ typedef struct s_select
 typedef struct s_files
 {
 	char *name;
+	char underline;
+	char selected;
 	struct s_files *next;
 	struct s_files *prev;
 }               t_files;
