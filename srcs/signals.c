@@ -14,9 +14,12 @@
 
 static void sig_processing(int signal)
 {
+	char buf[4];
+
 	if (signal == SIGWINCH)
 	{
-		ft_printf("you changed the window\n");
+		buf[0] = 0;
+		ioctl(0, TIOCSTI, buf);
 	}
 }
 
