@@ -24,9 +24,9 @@ int exit_error(char *error)
 	exit(1);
 }
 
-void get_screen_size(t_select *data)
+void get_screen_size(struct winsize *size)
 {
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, &data->size);
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, size);
 }
 
 void move_underline(t_files **files, int len, char direction)
@@ -80,23 +80,32 @@ void select_file(t_files **files, int len)
 	}
 }
 
-int do_select(t_select data, t_files **files)
+int do_select(t_select *data, t_files **files)
 {
-	ssize_t ret;
-	char key[6];
+	int key;
 
-	ret = read(0, &key, 6);
-	if (*key == ESC && ret == 1)
+	signals();
+	read(2, &key, 4);
+	if (key == ESC)
 		return (EXIT);
-	else if (*key == ESC && *(key + 1) == BRACKET)
-	{
-		if (*(key + 2) == 'A')
-			move_underline(files, data.list_len, UP);
-		if (*(key + 2) == 'B')
-			move_underline(files, data.list_len, DOWN);
-	}
-	if (key[0] == 32)
-		select_file(files, data.list_len);
+	else if (key == ARROW_UP)
+		move_underline(files, data->list_len, UP);
+	else if (key == ARROW_DOWN)
+		move_underline(files, data->list_len, DOWN);
+	else if (key == SPACE)
+		select_file(files, data->list_len);
+	else if (key == BACKSPACE || key == DELETE_KEY)
+		remove_item(files, data);
+	return (CONTINUE);
+}
+
+int display_files(t_select *data, t_files **files)
+{
+	get_screen_size(&data->size);
+	print_files(*data, *files);
+	if (do_select(data, files) == EXIT)
+		return (EXIT);
+	clr_screen();
 	return (CONTINUE);
 }
 
@@ -105,18 +114,18 @@ int  main(int argc, char **argv)
 	t_select data;
 	t_files *files;
 
+	if (argc == 1)
+		exit_error("Usage: ft_select [some files]\n");
 	if (!isatty(0))
 		exit_error("Stdin is not terminal\n");
 	set_raw_mode(&data);
 	get_files(&files, argv, argc, &data.list_len);
 	while (1)
 	{
-		get_screen_size(&data);
-		print_files(files, data.list_len);
-		if (do_select(data, &files) == EXIT)
+		if (display_files(&data, &files) == EXIT)
 			break ;
-		clr_screen();
 	}
+	free_list(&files, data.list_len);
 	set_canonical_mode(&data);
 	return (0);
 }

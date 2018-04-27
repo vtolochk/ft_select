@@ -25,6 +25,52 @@ t_files *new_node(void)
 	return (new_node);
 }
 
+void remove_item(t_files **head, t_select *data)
+{
+	int i;
+	t_files *lst;
+
+	i = 0;
+	lst = *head;
+	while (i < data->list_len)
+	{
+		if (lst->underline == 1)
+		{
+			data->list_len--;
+			lst->next->underline = 1;
+			lst->next->prev = lst->prev;
+			lst->prev->next = lst->next;
+			if (i == 0)
+				*head = lst->next;
+			ft_strdel(&lst->name);
+			free(lst);
+			if (data->list_len == 0)
+			{
+				set_canonical_mode(data);
+				exit(0);
+			}
+			break ;
+		}
+		i++;
+		lst = lst->next;
+	}
+}
+
+void free_list(t_files **head, int len)
+{
+	int i;
+	t_files *temp;
+
+	i = 0;
+	while (i++ < len)
+	{
+		temp = *head;
+		*head = (*head)->next;
+		ft_strdel(&temp->name);
+		free(temp);
+	}
+}
+
 void get_files(t_files **head, char **argv, int argc, int *list_len)
 {
 	t_files *lst;
@@ -33,20 +79,17 @@ void get_files(t_files **head, char **argv, int argc, int *list_len)
 	lst = *head;
 	lst->underline = 1;
 	argv++;
+	*list_len = argc - 1;
 	while (argc-- > 1)
 	{
 		lst->name = ft_strdup(*argv);
 		if (argc == 1)
-		{
-			(*list_len)++;
 			break ;
-		}
 		lst->next = new_node();
 		lst->next->prev = lst;
 		argv++;
-		(*list_len)++;
 		lst = lst->next;
 	}
-	lst->next = *head;
 	(*head)->prev = lst;
+	lst->next = *head;
 }

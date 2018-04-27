@@ -25,8 +25,15 @@
 #define EXIT 0
 #define CONTINUE 1
 
-#define ESC 27
-#define BRACKET 91
+#define ESC 32539
+#define SPACE 32544
+#define BACKSPACE 32639
+#define DELETE_KEY 2117294875
+#define ARROW_UP 4283163
+#define ARROW_DOWN 4348699
+#define ARROW_LEFT
+#define ARROW_RIGHT
+
 
 typedef struct s_select
 {
@@ -50,6 +57,15 @@ int print_command(int sign);
 void set_raw_mode(t_select *data);
 void set_canonical_mode(t_select *data);
 void get_files(t_files **list, char **argv, int argc, int *list_len);
-void print_files(t_files *head, int list_len);
+void print_files(t_select data, t_files *head);
+void remove_item(t_files **head, t_select *data);
+void free_list(t_files **head, int len);
+int print_colons(t_select data, t_files *head);
+size_t get_biggest_len(t_files *head, int lst_len);
+void underline_and_selected(char *string);
+void selected(char *string);
+void underline(char *string);
+void		signals(void);
+int display_files(t_select *data, t_files **files);
 
 #endif
