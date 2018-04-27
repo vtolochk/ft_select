@@ -22,6 +22,9 @@
 #define UP 0
 #define DOWN 1
 
+#define EXIT 0
+#define CONTINUE 1
+
 #define ESC 27
 #define BRACKET 91
 

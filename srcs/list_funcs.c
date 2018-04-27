@@ -12,46 +12,6 @@
 
 #include "ft_select.h"
 
-void print_files(t_files *head, int list_len)
-{
-	t_files *lst;
-
-	lst = head;
-	while (list_len > 0)
-	{
-		if (lst->underline && lst->selected)
-		{
-			tputs(tgetstr("so", NULL), 1, &print_command);
-			tputs(tgetstr("us", NULL), 1, &print_command);
-			write(1, lst->name, ft_strlen(lst->name));
-			write(1, "\n", 1);
-			tputs(tgetstr("ue", NULL), 1, &print_command);
-			tputs(tgetstr("se", NULL), 1, &print_command);
-		}
-		else if (lst->selected)
-		{
-			tputs(tgetstr("so", NULL), 1, &print_command);
-			write(1, lst->name, ft_strlen(lst->name));
-			write(1, "\n", 1);
-			tputs(tgetstr("se", NULL), 1, &print_command);
-		}
-		else if (lst->underline)
-		{
-			tputs(tgetstr("us", NULL), 1, &print_command);
-			write(1, lst->name, ft_strlen(lst->name));
-			write(1, "\n", 1);
-			tputs(tgetstr("ue", NULL), 1, &print_command);
-		}
-		else
-		{
-			write(1, lst->name, ft_strlen(lst->name));
-			write(1, "\n", 1);
-		}
-		list_len--;
-		lst = lst->next;
-	}
-}
-
 t_files *new_node(void)
 {
 	t_files *new_node;
