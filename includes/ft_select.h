@@ -60,12 +60,10 @@ void get_files(t_files **list, char **argv, int argc, int *list_len);
 void print_files(t_select data, t_files *head);
 void remove_item(t_files **head, t_select *data);
 void free_list(t_files **head, int len);
-int print_colons(t_select data, t_files *head);
 size_t get_biggest_len(t_files *head, int lst_len);
-void underline_and_selected(char *string);
-void selected(char *string);
-void underline(char *string);
 void		signals(void);
 int display_files(t_select *data, t_files **files);
+void clr_screen(t_select data);
+void print_file(t_files *lst);
 
 #endif

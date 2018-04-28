@@ -50,9 +50,18 @@ void move_underline(t_files **files, int len, char direction)
 	}
 }
 
-void clr_screen()
+void clr_screen(t_select data)
 {
-	tputs(tgetstr("cl", NULL), 1, &print_command);
+	int i;
+
+	i = 0;
+	while (i < data.size.ws_row)
+	{
+		write(2, tgoto(tgetstr("cm", NULL), 0, i), ft_strlen(tgoto(tgetstr("cm", NULL), 0, i)));
+		write(2, tgetstr("ce", NULL), ft_strlen(tgetstr("ce", NULL)));
+		i++;
+	}
+	write(2, tgoto(tgetstr("cm", NULL), 0, 0), ft_strlen(tgoto(tgetstr("cm", NULL), 0, 0)));
 }
 
 void select_file(t_files **files, int len)
@@ -105,7 +114,7 @@ int display_files(t_select *data, t_files **files)
 	print_files(*data, *files);
 	if (do_select(data, files) == EXIT)
 		return (EXIT);
-	clr_screen();
+	clr_screen(*data);
 	return (CONTINUE);
 }
 
@@ -125,7 +134,8 @@ int  main(int argc, char **argv)
 		if (display_files(&data, &files) == EXIT)
 			break ;
 	}
-	free_list(&files, data.list_len);
 	set_canonical_mode(&data);
+	//putstr selected files with spaces
+	free_list(&files, data.list_len);
 	return (0);
 }
