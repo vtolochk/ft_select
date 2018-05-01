@@ -19,20 +19,22 @@
 #include <sys/ioctl.h>
 #include <termcap.h>
 
-#define UP 0
-#define DOWN 1
-
 #define EXIT 0
 #define CONTINUE 1
+#define SEND 2
 
 #define ESC 27
+#define ESC_1 32539
 #define SPACE 32
+#define SPACE_1 32544
+#define ENTER 32522
 #define BACKSPACE 127
+#define BACKSPACE_1 32639
 #define DELETE_KEY 2117294875
 #define ARROW_UP 4283163
 #define ARROW_DOWN 4348699
-#define ARROW_LEFT
-#define ARROW_RIGHT
+#define ARROW_LEFT 4479771
+#define ARROW_RIGHT 4414235
 
 
 typedef struct s_select
@@ -48,6 +50,7 @@ typedef struct s_files
 	char *name;
 	char underline;
 	char selected;
+	int row;
 	struct s_files *next;
 	struct s_files *prev;
 }               t_files;

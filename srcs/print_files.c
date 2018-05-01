@@ -68,27 +68,28 @@ size_t get_biggest_len(t_files *head, int lst_len)
 	return (++biggest_len);
 }
 
-size_t get_cols(t_select data, t_files *head)
+size_t get_rows(t_select data, t_files *head)
 {
-	size_t colums;
+	size_t rows;
 	size_t word_len;
 
-	colums = 0;
+	rows = 0;
 	word_len = get_biggest_len(head, data.list_len);
 	while (word_len <= data.size.ws_col - 1)
 	{
-		colums++;
+		rows++;
 		word_len += word_len;
 	}
-	return (colums);
+	return (rows);
 }
 
 void print_files(t_select data, t_files *head)
 {
 	int biggest_len = get_biggest_len(head, data.list_len);
-	size_t real_cols = 1;
-	size_t avaliable_cols = get_cols(data, head);
+	size_t avaliable_rows = get_rows(data, head);
 	t_files *lst = head;
+
+	int real_rows = 1;
 	int y = 0;
 	int x = 0;
 	int i = 0;
@@ -99,20 +100,23 @@ void print_files(t_select data, t_files *head)
 		if (y >= data.size.ws_row - 1)
 		{
 			y = 0;
-			real_cols++;
+			real_rows++;
 			x += biggest_len;
 			continue ;
 		}
-		if (avaliable_cols == 0 || (avaliable_cols == 1 && data.list_len > data.size.ws_row - 1) || (real_cols * biggest_len > data.size.ws_col))
+		if (avaliable_rows == 0 || (avaliable_rows == 1 && data.list_len > data.size.ws_row - 1) || ((real_rows * biggest_len) - biggest_len > data.size.ws_col))
 		{
 			clr_screen(data);
 			write(1, "Window size too small\n", 22);
 			break ;
 		}
 		print_file(lst);
+		//ft_printf(" :%d", y);
+		lst->row = y;
 		write(1, "\n", 1);
 		lst = lst->next;
 		y++;
+
 		i++;
 	}
 }

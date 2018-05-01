@@ -29,10 +29,38 @@ void get_screen_size(struct winsize *size)
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, size);
 }
 
-void move_underline(t_files **files, int len, char direction)
+void move_right(t_files **files)
 {
+	int find;
 	t_files *lst;
 
+	lst = *files;
+	find = lst->row;
+	lst = lst->next;
+	while (lst->row != find)
+		lst = lst->next;
+	lst->underline = 1;
+}
+
+void move_left(t_files **files)
+{
+	int find;
+	t_files *lst;
+
+	lst = *files;
+	find = lst->row;
+	lst = lst->prev;
+	while (lst->row != find)
+		lst = lst->prev;
+	lst->underline = 1;
+}
+
+void move_underline(t_files **files, t_select data, int direction)
+{
+	int len;
+	t_files *lst;
+
+	len = data.list_len;
 	lst = *files;
 	while (len > 0)
 	{
@@ -40,10 +68,14 @@ void move_underline(t_files **files, int len, char direction)
 		if (lst->underline == 1)
 		{
 			lst->underline = 0;
-			if (direction == DOWN)
+			if (direction == ARROW_DOWN)
 				lst->next->underline = 1;
-			else
+			else if (direction == ARROW_UP)
 				lst->prev->underline = 1;
+			else if (direction == ARROW_RIGHT)
+				move_right(&lst);
+			else if (direction == ARROW_LEFT)
+				move_left(&lst);
 			break ;
 		}
 		lst = lst->next;
@@ -89,39 +121,65 @@ void select_file(t_files **files, int len)
 	}
 }
 
-#include <stdio.h>
-
 int do_select(t_select *data, t_files **files)
 {
 	int key;
 
 	signals();
 	read(2, &key, 4);
-	if (key == ESC)
+	if (key == ESC || key == ESC_1)
 		return (EXIT);
 	else if (key == ARROW_UP)
-		move_underline(files, data->list_len, UP);
+		move_underline(files, *data, ARROW_UP);
 	else if (key == ARROW_DOWN)
-		move_underline(files, data->list_len, DOWN);
-	else if (key == SPACE)
+		move_underline(files, *data, ARROW_DOWN);
+	else if (key == ARROW_LEFT)
+		move_underline(files, *data, ARROW_LEFT);
+	else if (key == ARROW_RIGHT)
+		move_underline(files, *data, ARROW_RIGHT);
+	else if (key == SPACE || key == SPACE_1)
 		select_file(files, data->list_len);
-	else if (key == BACKSPACE || key == DELETE_KEY)
+	else if (key == BACKSPACE || key == BACKSPACE_1 || key == DELETE_KEY)
 		remove_item(files, data);
+	else if (key == ENTER)
+		return (SEND);
 	return (CONTINUE);
 }
 
 int display_files(t_select *data, t_files **files)
 {
+	int ret;
+
 	get_screen_size(&data->size);
 	print_files(*data, *files);
-	if (do_select(data, files) == EXIT)
+	ret = do_select(data, files);
+	if (ret == EXIT)
 		return (EXIT);
+	else if (ret == SEND)
+		return (SEND);
 	clr_screen(*data);
 	return (CONTINUE);
 }
 
+void print_selected_files(t_files *files, int len) //need to finalize this function (problems with spaces) !!!!!!!!!!!
+{
+	t_files *lst;
+
+	lst = files;
+	while (len-- > 0)
+	{
+		if (lst->selected)
+		{
+			write(1, lst->name, ft_strlen(lst->name));
+			write(1, " ", 1);
+		}
+		lst = lst->next;
+	}
+}
+
 int  main(int argc, char **argv)
 {
+	int ret;
 	t_select data;
 	t_files *files;
 
@@ -133,11 +191,13 @@ int  main(int argc, char **argv)
 	get_files(&files, argv, argc, &data.list_len);
 	while (1)
 	{
-		if (display_files(&data, &files) == EXIT)
+		ret = display_files(&data, &files);
+		if (ret == EXIT || ret == SEND)
 			break ;
 	}
 	set_canonical_mode(&data);
-	//putstr selected files with spaces
+	if (ret == SEND)
+		print_selected_files(files, data.list_len);
 	free_list(&files, data.list_len);
 	return (0);
 }
