@@ -25,9 +25,9 @@
 #define EXIT 0
 #define CONTINUE 1
 
-#define ESC 32539
-#define SPACE 32544
-#define BACKSPACE 32639
+#define ESC 27
+#define SPACE 32
+#define BACKSPACE 127
 #define DELETE_KEY 2117294875
 #define ARROW_UP 4283163
 #define ARROW_DOWN 4348699

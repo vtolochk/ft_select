@@ -89,6 +89,8 @@ void select_file(t_files **files, int len)
 	}
 }
 
+#include <stdio.h>
+
 int do_select(t_select *data, t_files **files)
 {
 	int key;

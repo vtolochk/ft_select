@@ -65,7 +65,7 @@ size_t get_biggest_len(t_files *head, int lst_len)
 		i++;
 		lst = lst->next;
 	}
-	return (biggest_len);
+	return (++biggest_len);
 }
 
 size_t get_cols(t_select data, t_files *head)
@@ -75,59 +75,44 @@ size_t get_cols(t_select data, t_files *head)
 
 	colums = 0;
 	word_len = get_biggest_len(head, data.list_len);
-	while (word_len < data.size.ws_col)
+	while (word_len <= data.size.ws_col - 1)
 	{
 		colums++;
 		word_len += word_len;
-		word_len++;
 	}
 	return (colums);
 }
 
 void print_files(t_select data, t_files *head)
 {
-	size_t cols = get_cols(data, head);
-
 	int biggest_len = get_biggest_len(head, data.list_len);
-
-
+	size_t real_cols = 1;
+	size_t avaliable_cols = get_cols(data, head);
 	t_files *lst = head;
-	size_t y = 0;
-	size_t x = 0;
+	int y = 0;
+	int x = 0;
 	int i = 0;
 
-	// need to implement  the following part of code
-	if ((data.list_len >= data.size.ws_row - 1 && cols == 0) || (cols * biggest_len) >= data.size.ws_col - 1 || (biggest_len >= data.size.ws_col - 1))
-		write(0, "Not enough space", 16);
-	//=============================
-	else if (data.list_len >= data.size.ws_row - 1 && cols > 0)
+	while (i < data.list_len)
 	{
-		biggest_len++;
-		while (i < data.list_len)
+		write(2, tgoto(tgetstr("cm", NULL), x, y), ft_strlen(tgoto(tgetstr("cm", NULL), x, y)));
+		if (y >= data.size.ws_row - 1)
 		{
-			write(2, tgoto(tgetstr("cm", NULL), x, y), ft_strlen(tgoto(tgetstr("cm", NULL), x, y)));
-			if (y >= data.size.ws_row - 1)
-			{
-				y = 0;
-				x += biggest_len;
-				x++;
-				continue ;
-			}
-			print_file(lst);
-			write(1, "\n", 1);
-			lst = lst->next;
-			y++;
-			i++;
+			y = 0;
+			real_cols++;
+			x += biggest_len;
+			continue ;
 		}
-	}
-	else
-	{
-		while (i < data.list_len)
+		if (avaliable_cols == 0 || (avaliable_cols == 1 && data.list_len > data.size.ws_row - 1) || (real_cols * biggest_len > data.size.ws_col))
 		{
-			print_file(lst);
-			write(1, "\n", 1);
-			lst = lst->next;
-			i++;
+			clr_screen(data);
+			write(1, "Window size too small\n", 22);
+			break ;
 		}
+		print_file(lst);
+		write(1, "\n", 1);
+		lst = lst->next;
+		y++;
+		i++;
 	}
 }
