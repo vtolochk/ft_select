@@ -17,7 +17,7 @@ NAME = ft_select
 HEADER = includes/ft_select.h
 
 SRCS = srcs/ft_select.c srcs/mods.c srcs/list_funcs.c srcs/print_files.c srcs/signals.c srcs/print_one_file.c \
-srcs/getters.c srcs/moves.c srcs/helpers.c
+srcs/getters.c srcs/moves.c srcs/helpers.c srcs/select_all.c
 
 OBJ = $(SRCS:.c=.o)
 

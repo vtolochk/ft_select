@@ -23,20 +23,25 @@ static void underline_and_selected(char *string)
 
 static void selected(char *string)
 {
+	ft_printf(SELECTED);
 	tputs(tgetstr("so", NULL), 1, &print_command);
 	write(STDERR_FILENO, string, ft_strlen(string));
 	tputs(tgetstr("se", NULL), 1, &print_command);
+	ft_printf(EOC);
 }
 
 static void underline(char *string)
 {
+	ft_printf(UNDERLINE);
 	tputs(tgetstr("us", NULL), 1, &print_command);
 	write(STDERR_FILENO, string, ft_strlen(string));
 	tputs(tgetstr("ue", NULL), 1, &print_command);
+	ft_printf(EOC);
 }
 
 void print_file(t_files *lst)
 {
+	ft_printf(BLUE);
 	if (lst->underline && lst->selected)
 		underline_and_selected(lst->name);
 	else if (lst->selected)
@@ -46,4 +51,5 @@ void print_file(t_files *lst)
 	else
 		write(STDERR_FILENO, lst->name, ft_strlen(lst->name));
 	write(STDERR_FILENO, "\n", 1);
+	ft_printf(EOC);
 }

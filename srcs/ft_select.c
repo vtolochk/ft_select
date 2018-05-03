@@ -32,6 +32,10 @@ int do_select(t_select *data, t_files **files)
 		select_file(files, data->list_len);
 	else if (key == BACKSPACE || key == BACKSPACE_1 || key == DELETE_KEY)
 		remove_item(files, data);
+	else if (key == PLUS)
+		select_all(files, data->list_len);
+	else if (key == MINUS)
+		unselect_all(files, data->list_len);
 	else if (key == ENTER || key == ENTER_1)
 		return (SEND);
 	return (CONTINUE);

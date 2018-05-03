@@ -29,7 +29,9 @@ static int window_too_small(int available_rows, t_select data, int real, int big
 	if (available_rows == 0 || (available_rows == 1 && data.list_len > data.size.ws_row - 1) || (real * biggest > data.size.ws_col))
 	{
 		clr_screen(data);
+		ft_printf(WARNING);
 		write(STDERR_FILENO, "Window size too small\n", 22);
+		ft_printf(EOC);
 		return (1);
 	}
 	return (0);

@@ -20,7 +20,9 @@ int print_command(int sign)
 
 int exit_error(char *error)
 {
+	ft_printf(WARNING);
 	write(STDERR_FILENO, error, ft_strlen(error));
+	ft_printf(EOC);
 	exit(1);
 }
 

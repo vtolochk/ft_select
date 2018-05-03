@@ -28,6 +28,8 @@
 #define ENTER 10
 #define BACKSPACE 127
 #define SIG_KILL 255
+# define PLUS 43
+# define MINUS 45
 
 #define ESC_1 32539
 #define SIG_KILL_1 32767
@@ -41,6 +43,11 @@
 #define ARROW_LEFT 4479771
 #define ARROW_RIGHT 4414235
 
+# define EOC "\e[0m"
+# define BLUE "\e[38;5;69m"
+# define UNDERLINE "\e[38;5;75m"
+# define SELECTED "\e[38;5;180m"
+# define WARNING "\e[38;5;197m"
 
 typedef struct s_select
 {
@@ -81,5 +88,7 @@ void print_selected_files(t_files *files, int len);
 t_select *data_keeper(t_select *dt);
 void move_underline(t_files **files, t_select data, int direction);
 void select_file(t_files **files, int len);
+void select_all(t_files **files, int list_len);
+void unselect_all(t_files **files, int list_len);
 
 #endif
