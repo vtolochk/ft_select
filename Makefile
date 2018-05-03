@@ -6,11 +6,12 @@
 #    By: vtolochk <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/20 15:02:45 by vtolochk          #+#    #+#              #
-#    Updated: 2018/04/28 19:40:50 by vtolochk         ###   ########.fr        #
+#    Updated: 2018/05/03 20:31:56 by vtolochk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 .PHONY: all clean fclean re
+.SILENT:
 
 NAME = ft_select
 
