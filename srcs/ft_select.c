@@ -12,122 +12,13 @@
 
 #include "ft_select.h"
 
-int print_command(int sign)
-{
-	write(STDERR_FILENO, &sign, 1);
-	return (1);
-}
-
-int exit_error(char *error)
-{
-	write(STDERR_FILENO, error, ft_strlen(error));
-	exit(1);
-}
-
-void get_screen_size(struct winsize *size)
-{
-	ioctl(STDERR_FILENO, TIOCGWINSZ, size);
-}
-
-void move_right(t_files **files)
-{
-	int find;
-	t_files *lst;
-
-	lst = *files;
-	find = lst->row;
-	lst = lst->next;
-	while (lst->row != find)
-		lst = lst->next;
-	lst->underline = 1;
-}
-
-void move_left(t_files **files)
-{
-	int find;
-	t_files *lst;
-
-	lst = *files;
-	find = lst->row;
-	lst = lst->prev;
-	while (lst->row != find)
-		lst = lst->prev;
-	lst->underline = 1;
-}
-
-void move_underline(t_files **files, t_select data, int direction)
-{
-	int len;
-	t_files *lst;
-
-	len = data.list_len;
-	lst = *files;
-	while (len > 0)
-	{
-		len--;
-		if (lst->underline == 1)
-		{
-			lst->underline = 0;
-			if (direction == ARROW_DOWN)
-				lst->next->underline = 1;
-			else if (direction == ARROW_UP)
-				lst->prev->underline = 1;
-			else if (direction == ARROW_RIGHT)
-				move_right(&lst);
-			else if (direction == ARROW_LEFT)
-				move_left(&lst);
-			break ;
-		}
-		lst = lst->next;
-	}
-}
-
-void clr_screen(t_select data)
-{
-	int i;
-
-	i = 0;
-	while (i < data.size.ws_row)
-	{
-		write(2, tgoto(tgetstr("cm", NULL), 0, i), ft_strlen(tgoto(tgetstr("cm", NULL), 0, i)));
-		write(2, tgetstr("ce", NULL), ft_strlen(tgetstr("ce", NULL)));
-		i++;
-	}
-	write(2, tgoto(tgetstr("cm", NULL), 0, 0), ft_strlen(tgoto(tgetstr("cm", NULL), 0, 0)));
-}
-
-void select_file(t_files **files, int len)
-{
-	t_files *lst;
-
-	lst = *files;
-	while (len-- > 0)
-	{
-		if (lst->underline && lst->selected)
-		{
-			lst->selected = 0;
-			lst->underline = 0;
-			lst->next->underline = 1;
-			break ;
-		}
-		if (lst->underline)
-		{
-			lst->selected = 1;
-			lst->underline = 0;
-			lst->next->underline = 1;
-			break ;
-		}
-		lst = lst->next;
-	}
-}
-
 int do_select(t_select *data, t_files **files)
 {
 	int key;
 
 	signals();
 	read(2, &key, 4);
-	if (key == ESC || key == ESC_1)
+	if (key == ESC || key == ESC_1 || key == SIG_KILL || key == SIG_KILL_1)
 		return (EXIT);
 	else if (key == ARROW_UP)
 		move_underline(files, *data, ARROW_UP);
@@ -141,12 +32,12 @@ int do_select(t_select *data, t_files **files)
 		select_file(files, data->list_len);
 	else if (key == BACKSPACE || key == BACKSPACE_1 || key == DELETE_KEY)
 		remove_item(files, data);
-	else if (key == ENTER)
+	else if (key == ENTER || key == ENTER_1)
 		return (SEND);
 	return (CONTINUE);
 }
 
-int number_of_seleceted_files(t_files *files, int len)
+int number_of_selected_files(t_files *files, int len)
 {
 	t_files *lst;
 	int selected_files;
@@ -168,7 +59,7 @@ void print_selected_files(t_files *files, int len)
 	int selected_files;
 
 	lst = files;
-	selected_files = number_of_seleceted_files(files, len);
+	selected_files = number_of_selected_files(files, len);
 	while (len-- > 0)
 	{
 		if (lst->selected)
@@ -187,7 +78,7 @@ int display_files(t_select *data, t_files **files)
 	int ret;
 
 	get_screen_size(&data->size);
-	print_files(*data, *files);
+	print_files(*data, *files, 0, 0);
 	ret = do_select(data, files);
 	if (ret == EXIT)
 		return (EXIT);
@@ -209,6 +100,7 @@ int  main(int argc, char **argv)
 		exit_error("Stdin is not terminal\n");
 	set_raw_mode(&data);
 	get_files(&files, argv, argc, &data.list_len);
+	data_keeper(&data);
 	while (1)
 	{
 		ret = display_files(&data, &files);

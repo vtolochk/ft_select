@@ -18,7 +18,6 @@ void set_raw_mode(t_select *data)
 		exit_error("The terminfo database could not be found\n");
 	if (tcgetattr(0, &data->tty) == -1)
 		exit_error("Can't get the parameters of the terminal\n");
-	data->list_len = 0;
 	data->old_tty = data->tty;
 	data->tty.c_lflag &= ~ECHO;
 	data->tty.c_lflag &= ~ICANON;

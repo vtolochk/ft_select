@@ -24,12 +24,17 @@
 #define SEND 2
 
 #define ESC 27
-#define ESC_1 32539
 #define SPACE 32
-#define SPACE_1 32544
-#define ENTER 32522
+#define ENTER 10
 #define BACKSPACE 127
+#define SIG_KILL 255
+
+#define ESC_1 32539
+#define SIG_KILL_1 32767
+#define SPACE_1 32544
+#define ENTER_1 32522
 #define BACKSPACE_1 32639
+
 #define DELETE_KEY 2117294875
 #define ARROW_UP 4283163
 #define ARROW_DOWN 4348699
@@ -60,13 +65,21 @@ int print_command(int sign);
 void set_raw_mode(t_select *data);
 void set_canonical_mode(t_select *data);
 void get_files(t_files **list, char **argv, int argc, int *list_len);
-void print_files(t_select data, t_files *head);
+void print_files(t_select data, t_files *head, int x, int y);
 void remove_item(t_files **head, t_select *data);
 void free_list(t_files **head, int len);
-size_t get_biggest_len(t_files *head, int lst_len);
+int get_biggest_len(t_files *head, int lst_len);
+int get_rows(t_select data, t_files *head);
+void get_screen_size(struct winsize *size);
 void		signals(void);
 int display_files(t_select *data, t_files **files);
 void clr_screen(t_select data);
 void print_file(t_files *lst);
+void stop_handler(t_select *data);
+void continue_handler(t_select *data);
+void print_selected_files(t_files *files, int len);
+t_select *data_keeper(t_select *dt);
+void move_underline(t_files **files, t_select data, int direction);
+void select_file(t_files **files, int len);
 
 #endif
