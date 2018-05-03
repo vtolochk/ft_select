@@ -16,7 +16,7 @@ static void underline_and_selected(char *string)
 {
 	tputs(tgetstr("so", NULL), 1, &print_command);
 	tputs(tgetstr("us", NULL), 1, &print_command);
-	write(1, string, ft_strlen(string));
+	write(STDERR_FILENO, string, ft_strlen(string));
 	tputs(tgetstr("ue", NULL), 1, &print_command);
 	tputs(tgetstr("se", NULL), 1, &print_command);
 }
@@ -24,14 +24,14 @@ static void underline_and_selected(char *string)
 static void selected(char *string)
 {
 	tputs(tgetstr("so", NULL), 1, &print_command);
-	write(1, string, ft_strlen(string));
+	write(STDERR_FILENO, string, ft_strlen(string));
 	tputs(tgetstr("se", NULL), 1, &print_command);
 }
 
 static void underline(char *string)
 {
 	tputs(tgetstr("us", NULL), 1, &print_command);
-	write(1, string, ft_strlen(string));
+	write(STDERR_FILENO, string, ft_strlen(string));
 	tputs(tgetstr("ue", NULL), 1, &print_command);
 }
 
@@ -44,7 +44,7 @@ void print_file(t_files *lst)
 	else if (lst->underline)
 		underline(lst->name);
 	else
-		write(1, lst->name, ft_strlen(lst->name));
+		write(STDERR_FILENO, lst->name, ft_strlen(lst->name));
 }
 
 size_t get_biggest_len(t_files *head, int lst_len)
@@ -104,19 +104,17 @@ void print_files(t_select data, t_files *head)
 			x += biggest_len;
 			continue ;
 		}
-		if (avaliable_rows == 0 || (avaliable_rows == 1 && data.list_len > data.size.ws_row - 1) || ((real_rows * biggest_len) - biggest_len > data.size.ws_col))
+		if (avaliable_rows == 0 || (avaliable_rows == 1 && data.list_len > data.size.ws_row - 1) || (real_rows * biggest_len > data.size.ws_col))
 		{
 			clr_screen(data);
-			write(1, "Window size too small\n", 22);
+			write(STDERR_FILENO, "Window size too small\n", 22);
 			break ;
 		}
 		print_file(lst);
-		//ft_printf(" :%d", y);
 		lst->row = y;
-		write(1, "\n", 1);
+		write(STDERR_FILENO, "\n", 1);
 		lst = lst->next;
 		y++;
-
 		i++;
 	}
 }

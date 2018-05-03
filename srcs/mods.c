@@ -20,10 +20,11 @@ void set_raw_mode(t_select *data)
 		exit_error("Can't get the parameters of the terminal\n");
 	data->list_len = 0;
 	data->old_tty = data->tty;
-	data->tty.c_lflag &= ECHO;
-	data->tty.c_lflag &= ~(ICANON);
+	data->tty.c_lflag &= ~ECHO;
+	data->tty.c_lflag &= ~ICANON;
 	data->tty.c_cc[VMIN] = 1;
-	tcsetattr(0, TCSAFLUSH, &data->tty);
+	if (tcsetattr(0, TCSAFLUSH, &data->tty) == -1)
+		exit_error("Can't set parameters\n");
 	tputs(tgetstr("ti", NULL), 1, &print_command);
 	tputs(tgetstr("vi", NULL), 1, &print_command);
 }

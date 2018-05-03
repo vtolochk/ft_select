@@ -20,13 +20,13 @@ int print_command(int sign)
 
 int exit_error(char *error)
 {
-	write(2, error, ft_strlen(error));
+	write(STDERR_FILENO, error, ft_strlen(error));
 	exit(1);
 }
 
 void get_screen_size(struct winsize *size)
 {
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, size);
+	ioctl(STDERR_FILENO, TIOCGWINSZ, size);
 }
 
 void move_right(t_files **files)
@@ -146,6 +146,42 @@ int do_select(t_select *data, t_files **files)
 	return (CONTINUE);
 }
 
+int number_of_seleceted_files(t_files *files, int len)
+{
+	t_files *lst;
+	int selected_files;
+
+	lst = files;
+	selected_files = 0;
+	while (len-- > 0)
+	{
+		if (lst->selected)
+			selected_files++;
+		lst = lst->next;
+	}
+	return (selected_files);
+}
+
+void print_selected_files(t_files *files, int len)
+{
+	t_files *lst;
+	int selected_files;
+
+	lst = files;
+	selected_files = number_of_seleceted_files(files, len);
+	while (len-- > 0)
+	{
+		if (lst->selected)
+		{
+			write(1, lst->name, ft_strlen(lst->name));
+			if (selected_files > 1)
+				write(1, " ", 1);
+			selected_files--;
+		}
+		lst = lst->next;
+	}
+}
+
 int display_files(t_select *data, t_files **files)
 {
 	int ret;
@@ -159,22 +195,6 @@ int display_files(t_select *data, t_files **files)
 		return (SEND);
 	clr_screen(*data);
 	return (CONTINUE);
-}
-
-void print_selected_files(t_files *files, int len) //need to finalize this function (problems with spaces) !!!!!!!!!!!
-{
-	t_files *lst;
-
-	lst = files;
-	while (len-- > 0)
-	{
-		if (lst->selected)
-		{
-			write(1, lst->name, ft_strlen(lst->name));
-			write(1, " ", 1);
-		}
-		lst = lst->next;
-	}
 }
 
 int  main(int argc, char **argv)
