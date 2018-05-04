@@ -6,13 +6,13 @@
 /*   By: vtolochk <vtolochk@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/20 14:51:00 by vtolochk          #+#    #+#             */
-/*   Updated: 2018/04/20 15:04:44 by vtolochk         ###   ########.fr       */
+/*   Updated: 2018/05/04 11:20:51 by vtolochk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_select.h"
 
-int do_select(t_select *data, t_files **files)
+int		do_select(t_select *data, t_files **files)
 {
 	int key;
 
@@ -31,7 +31,7 @@ int do_select(t_select *data, t_files **files)
 	else if (key == SPACE || key == SPACE_1)
 		select_file(files, data->list_len);
 	else if (key == BACKSPACE || key == BACKSPACE_1 || key == DELETE_KEY)
-		remove_item(files, data);
+		remove_item(files, data, 0);
 	else if (key == PLUS)
 		select_all(files, data->list_len);
 	else if (key == MINUS)
@@ -41,10 +41,10 @@ int do_select(t_select *data, t_files **files)
 	return (CONTINUE);
 }
 
-int number_of_selected_files(t_files *files, int len)
+int		number_of_selected_files(t_files *files, int len)
 {
-	t_files *lst;
-	int selected_files;
+	t_files		*lst;
+	int			selected_files;
 
 	lst = files;
 	selected_files = 0;
@@ -57,10 +57,10 @@ int number_of_selected_files(t_files *files, int len)
 	return (selected_files);
 }
 
-void print_selected_files(t_files *files, int len)
+void	print_selected_files(t_files *files, int len)
 {
-	t_files *lst;
-	int selected_files;
+	t_files		*lst;
+	int			selected_files;
 
 	lst = files;
 	selected_files = number_of_selected_files(files, len);
@@ -77,7 +77,7 @@ void print_selected_files(t_files *files, int len)
 	}
 }
 
-int display_files(t_select *data, t_files **files)
+int		display_files(t_select *data, t_files **files)
 {
 	int ret;
 
@@ -92,11 +92,11 @@ int display_files(t_select *data, t_files **files)
 	return (CONTINUE);
 }
 
-int  main(int argc, char **argv)
+int		main(int argc, char **argv)
 {
-	int ret;
-	t_select data;
-	t_files *files;
+	int			ret;
+	t_select	data;
+	t_files		*files;
 
 	if (argc == 1)
 		exit_error("Usage: ft_select [some files]\n");

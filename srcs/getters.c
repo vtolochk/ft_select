@@ -6,23 +6,23 @@
 /*   By: vtolochk <vtolochk@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/03 19:37:00 by vtolochk          #+#    #+#             */
-/*   Updated: 2018/05/03 19:37:00 by vtolochk         ###   ########.fr       */
+/*   Updated: 2018/05/04 11:20:10 by vtolochk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_select.h"
 
-void get_screen_size(struct winsize *size)
+void	get_screen_size(struct winsize *size)
 {
 	ioctl(STDERR_FILENO, TIOCGWINSZ, size);
 }
 
-int get_biggest_len(t_files *head, int lst_len)
+int		get_biggest_len(t_files *head, int lst_len)
 {
-	int i;
-	int temp;
-	int biggest_len;
-	t_files *lst;
+	int			i;
+	int			temp;
+	int			biggest_len;
+	t_files		*lst;
 
 	i = 0;
 	biggest_len = 0;
@@ -38,7 +38,7 @@ int get_biggest_len(t_files *head, int lst_len)
 	return (++biggest_len);
 }
 
-int get_rows(t_select data, t_files *head)
+int		get_rows(t_select data, t_files *head)
 {
 	int rows;
 	int word_len;

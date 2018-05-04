@@ -6,16 +6,16 @@
 /*   By: vtolochk <vtolochk@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/03 19:40:00 by vtolochk          #+#    #+#             */
-/*   Updated: 2018/05/03 19:40:00 by vtolochk         ###   ########.fr       */
+/*   Updated: 2018/05/04 11:19:23 by vtolochk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_select.h"
 
-static void move_right(t_files **files)
+static void		move_right(t_files **files)
 {
-	int find;
-	t_files *lst;
+	int			find;
+	t_files		*lst;
 
 	lst = *files;
 	find = lst->row;
@@ -25,10 +25,10 @@ static void move_right(t_files **files)
 	lst->underline = 1;
 }
 
-static void move_left(t_files **files)
+static void		move_left(t_files **files)
 {
-	int find;
-	t_files *lst;
+	int			find;
+	t_files		*lst;
 
 	lst = *files;
 	find = lst->row;
@@ -38,10 +38,10 @@ static void move_left(t_files **files)
 	lst->underline = 1;
 }
 
-void move_underline(t_files **files, t_select data, int direction)
+void			move_underline(t_files **files, t_select data, int direct)
 {
-	int len;
-	t_files *lst;
+	int			len;
+	t_files		*lst;
 
 	len = data.list_len;
 	lst = *files;
@@ -51,17 +51,16 @@ void move_underline(t_files **files, t_select data, int direction)
 		if (lst->underline == 1)
 		{
 			lst->underline = 0;
-			if (direction == ARROW_DOWN)
+			if (direct == ARROW_DOWN)
 				lst->next->underline = 1;
-			else if (direction == ARROW_UP)
+			else if (direct == ARROW_UP)
 				lst->prev->underline = 1;
-			else if (direction == ARROW_RIGHT)
+			else if (direct == ARROW_RIGHT)
 				move_right(&lst);
-			else if (direction == ARROW_LEFT)
+			else if (direct == ARROW_LEFT)
 				move_left(&lst);
 			break ;
 		}
 		lst = lst->next;
 	}
 }
-

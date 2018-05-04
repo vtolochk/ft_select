@@ -6,13 +6,13 @@
 /*   By: vtolochk <vtolochk@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/24 18:52:00 by vtolochk          #+#    #+#             */
-/*   Updated: 2018/04/24 18:52:00 by vtolochk         ###   ########.fr       */
+/*   Updated: 2018/05/04 10:49:38 by vtolochk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_select.h"
 
-void set_raw_mode(t_select *data)
+void	set_raw_mode(t_select *data)
 {
 	if (tgetent(NULL, getenv("TERM")) == -1)
 		exit_error("The terminfo database could not be found\n");
@@ -28,7 +28,7 @@ void set_raw_mode(t_select *data)
 	tputs(tgetstr("vi", NULL), 1, &print_command);
 }
 
-void set_canonical_mode(t_select *data)
+void	set_canonical_mode(t_select *data)
 {
 	tputs(tgetstr("ve", NULL), 1, &print_command);
 	tputs(tgetstr("te", NULL), 1, &print_command);

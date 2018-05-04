@@ -6,16 +6,16 @@
 /*   By: vtolochk <vtolochk@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 18:24:00 by vtolochk          #+#    #+#             */
-/*   Updated: 2018/04/27 18:24:00 by vtolochk         ###   ########.fr       */
+/*   Updated: 2018/05/04 11:04:41 by vtolochk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_select.h"
 
-static void sig_processing(int sig_number)
+static void		sig_processing(int sig_number)
 {
-	char buf[4];
-	t_select *data;
+	char		buf[4];
+	t_select	*data;
 
 	data = data_keeper(NULL);
 	if (sig_number == SIGWINCH)
@@ -23,8 +23,8 @@ static void sig_processing(int sig_number)
 		buf[0] = 0;
 		ioctl(STDERR_FILENO, TIOCSTI, buf);
 	}
-	else if (sig_number == SIGINT || sig_number == SIGABRT || sig_number == SIGSTOP ||
-			sig_number == SIGKILL || sig_number == SIGQUIT)
+	else if (sig_number == SIGINT || sig_number == SIGABRT ||
+	sig_number == SIGSTOP || sig_number == SIGKILL || sig_number == SIGQUIT)
 	{
 		buf[0] = -1;
 		ioctl(STDERR_FILENO, TIOCSTI, buf);
@@ -35,7 +35,7 @@ static void sig_processing(int sig_number)
 		continue_handler(data);
 }
 
-void continue_handler(t_select *data)
+void			continue_handler(t_select *data)
 {
 	char buf[4];
 
@@ -47,7 +47,7 @@ void continue_handler(t_select *data)
 	ioctl(STDERR_FILENO, TIOCSTI, buf);
 }
 
-void stop_handler(t_select *data)
+void			stop_handler(t_select *data)
 {
 	tputs(tgetstr("ve", NULL), 1, &print_command);
 	tputs(tgetstr("te", NULL), 1, &print_command);
@@ -56,7 +56,7 @@ void stop_handler(t_select *data)
 	ioctl(STDERR_FILENO, TIOCSTI, "\032");
 }
 
-void		signals(void)
+void			signals(void)
 {
 	signal(SIGINT, sig_processing);
 	signal(SIGSTOP, sig_processing);
