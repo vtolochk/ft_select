@@ -24,7 +24,8 @@ static void		sig_processing(int sig_number)
 		ioctl(STDERR_FILENO, TIOCSTI, buf);
 	}
 	else if (sig_number == SIGINT || sig_number == SIGABRT ||
-	sig_number == SIGSTOP || sig_number == SIGKILL || sig_number == SIGQUIT)
+	sig_number == SIGTERM || sig_number == SIGSTOP || 
+	sig_number == SIGKILL || sig_number == SIGQUIT)
 	{
 		buf[0] = -1;
 		ioctl(STDERR_FILENO, TIOCSTI, buf);
@@ -66,4 +67,5 @@ void			signals(void)
 	signal(SIGTSTP, sig_processing);
 	signal(SIGKILL, sig_processing);
 	signal(SIGWINCH, sig_processing);
+	signal(SIGTERM, sig_processing);
 }
